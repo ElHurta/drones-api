@@ -89,6 +89,11 @@ export class DroneService {
       return 'Battery level too low!';
     }
 
+    // Validate the state of the drone, it should be IDLE
+    if (drone.state !== 'IDLE') {
+      return 'Drone is not in IDLE state!';
+    }
+
     // Change the state of the drone
     this.droneRepository.update(drone.serialNumber, {
       state: 'LOADING',

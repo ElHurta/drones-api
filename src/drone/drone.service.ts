@@ -82,12 +82,31 @@ export class DroneService {
       return 'Weight limit exceeded!';
     }
 
+    // Validate the battery level
+    const batteryLevel = (await this.checkDroneBatteryLevel(serialNumber)).batteryCapacity;
+
+    if (batteryLevel < 25) {
+      return 'Battery level too low!';
+    }
+
+    // Change the state of the drone
+    this.droneRepository.update(drone.serialNumber, {
+      state: 'LOADING',
+    });
+
     // Load the medications
-    return medicationsIds.map((medicationId) => {
+    medicationsIds.map((medicationId) => {
       this.medicationRepository.update(medicationId, {
         drone: drone,
       });
       return medicationId;
     });
+
+    // Change the state of the drone
+    this.droneRepository.update(drone.serialNumber, {
+      state: 'LOADED',
+    });
+
+    return 'Drone loaded successfully!';
   }
 }

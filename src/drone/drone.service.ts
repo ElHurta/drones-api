@@ -34,6 +34,13 @@ export class DroneService {
     });
   }
 
+  checkDroneBatteryLevel(serialNumber: string) {
+    return this.droneRepository.findOne({
+      where: { serialNumber },
+      select: ['batteryCapacity'],
+    });
+  }
+
   async loadDrone(serialNumber: string, medicationsIds: string[]) {
     // Validate the drone
     const drone = await this.getDroneById(serialNumber);
@@ -79,9 +86,5 @@ export class DroneService {
 
   checkAvailableDrones() {
     return 'Drones available!';
-  }
-
-  checkBatteryLevel() {
-    return 'Battery level checked!';
   }
 }

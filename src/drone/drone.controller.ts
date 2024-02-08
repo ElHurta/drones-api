@@ -43,8 +43,8 @@ export class DroneController {
   }
 
   // Checking drone battery level for a given drone
-  @Get('check-battery-level')
-  checkBatteryLevel() {
-    return this.dronService.checkBatteryLevel();
+  @Get('check-battery-level/:serialNumber')
+  checkBatteryLevel(@Param('serialNumber') serialNumber: string) {
+    return this.dronService.checkDroneBatteryLevel(serialNumber);
   }
 }

@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Drone } from './drone.entity';
 import { In, Repository } from 'typeorm';
 import { CreateDroneDto } from './dto/create-drone.dto';
-import { CreateMedicationDto } from 'src/medication/dto/create-mediaction.dto';
 import { Medication } from 'src/medication/medication.entity';
+import { DroneStateEnum } from './enums/droneState.enum';
 
 @Injectable({})
 export class DroneService {
@@ -15,12 +15,11 @@ export class DroneService {
   ) {}
 
   registerDrone(drone: CreateDroneDto) {
-    const newDrone = this.droneRepository.create({
+    return this.droneRepository.upsert({
       ...drone,
-      state: 'IDLE',
-      medications: [],
-    });
-    return this.droneRepository.save(newDrone);
+      state: DroneStateEnum.IDLE,
+    }, ['serialNumber']);
+    //return this.droneRepository.save(newDrone);
   }
 
   getAllDrones() {
@@ -60,16 +59,23 @@ export class DroneService {
     // Validate the drone
     const drone = await this.getDroneById(serialNumber);
     if (!drone) {
-      return 'Drone not found!';
+      return new HttpException('Drone not found!', 404);
     }
 
     // Validate the medications
     const medications = await this.medicationRepository.find({
       where: { code: In(medicationsIds) },
+      relations: ['drone'],
     });
 
     if (medications.length !== medicationsIds.length) {
       return 'Medications not found!';
+    }
+
+    // If any of the medications is already loaded, return an error
+    const loadedMedications = medications.filter((medication) => medication.drone);
+    if (loadedMedications.length > 0) {
+      return 'Medications already loaded!';
     }
 
     // Validate the weight limit
@@ -79,7 +85,7 @@ export class DroneService {
     );
 
     if (totalWeight > drone.weightLimit) {
-      return 'Weight limit exceeded!';
+      return new BadRequestException('Weight limit exceeded!');
     }
 
     // Validate the battery level
@@ -90,13 +96,13 @@ export class DroneService {
     }
 
     // Validate the state of the drone, it should be IDLE
-    if (drone.state !== 'IDLE') {
+    if (drone.state !== DroneStateEnum.IDLE) {
       return 'Drone is not in IDLE state!';
     }
 
     // Change the state of the drone
     this.droneRepository.update(drone.serialNumber, {
-      state: 'LOADING',
+      state: DroneStateEnum.LOADING,
     });
 
     // Load the medications
@@ -109,7 +115,7 @@ export class DroneService {
 
     // Change the state of the drone
     this.droneRepository.update(drone.serialNumber, {
-      state: 'LOADED',
+      state: DroneStateEnum.LOADED,
     });
 
     return 'Drone loaded successfully!';

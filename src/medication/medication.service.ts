@@ -14,6 +14,8 @@ export class MedicationService {
     }
 
     getAllMedication() {
-        return this.medicationRepository.find();
+        return this.medicationRepository.find({
+            relations: ['drone']
+        });
     }
 }

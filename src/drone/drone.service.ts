@@ -15,11 +15,13 @@ export class DroneService {
   ) {}
 
   registerDrone(drone: CreateDroneDto) {
-    return this.droneRepository.upsert({
-      ...drone,
-      state: DroneStateEnum.IDLE,
-    }, ['serialNumber']);
-    //return this.droneRepository.save(newDrone);
+    return this.droneRepository.upsert(
+      {
+        ...drone,
+        state: DroneStateEnum.IDLE,
+      },
+      ['serialNumber'],
+    );
   }
 
   getAllDrones() {
@@ -59,7 +61,7 @@ export class DroneService {
     // Validate the drone
     const drone = await this.getDroneById(serialNumber);
     if (!drone) {
-      return new HttpException('Drone not found!', 404);
+      return new BadRequestException('Drone not found!');
     }
 
     // Validate the medications
@@ -69,13 +71,18 @@ export class DroneService {
     });
 
     if (medications.length !== medicationsIds.length) {
-      return 'Medications not found!';
+      return new BadRequestException('Medication not found!');
     }
 
     // If any of the medications is already loaded, return an error
-    const loadedMedications = medications.filter((medication) => medication.drone);
+    const loadedMedications = medications.filter(
+      (medication) => medication.drone,
+    );
     if (loadedMedications.length > 0) {
-      return 'Medications already loaded!';
+      return new HttpException(
+        `Medication ${loadedMedications[0].name} is already loaded!`,
+        400,
+      );
     }
 
     // Validate the weight limit
@@ -85,11 +92,12 @@ export class DroneService {
     );
 
     if (totalWeight > drone.weightLimit) {
-      return new BadRequestException('Weight limit exceeded!');
+      return new HttpException('Weight limit exceeded!', 400);
     }
 
     // Validate the battery level
-    const batteryLevel = (await this.checkDroneBatteryLevel(serialNumber)).batteryCapacity;
+    const batteryLevel = (await this.checkDroneBatteryLevel(serialNumber))
+      .batteryCapacity;
 
     if (batteryLevel < 25) {
       return 'Battery level too low!';

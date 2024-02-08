@@ -1,11 +1,13 @@
-import { IsArray } from "class-validator";
-import { CreateMedicationDto } from "src/medication/dto/create-mediaction.dto";
+import { IsArray } from 'class-validator';
+import { CreateMedicationDto } from 'src/medication/dto/create-mediaction.dto';
 
 export class LoadDroneDto {
-    serialNumber: string;
+  serialNumber: string;
 
-    @IsArray()
-    medicationsIds: [{
-        code: string;
-    }];
+  @IsArray()
+  medicationsIds: [
+    {
+      code: string;
+    },
+  ];
 }

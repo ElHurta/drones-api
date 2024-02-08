@@ -1,30 +1,42 @@
-import { Medication } from "src/medication/medication.entity";
-import { Entity, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
+import { Medication } from 'src/medication/medication.entity';
+import {
+  Entity,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+} from 'typeorm';
 
 @Entity()
 export class Drone {
-    
-    @Column({unique: true, primary: true, length: 100})
-    serialNumber: string;
+  @Column({ unique: true, primary: true, length: 100 })
+  serialNumber: string;
 
-    @Column()
-    model: string;
+  @Column()
+  model: string;
 
-    @Column()
-    weightLimit: number;
+  @Column()
+  weightLimit: number;
 
-    @Column()
-    batteryCapacity: number;
-    
-    @Column()
-    state: string;
+  @Column()
+  batteryCapacity: number;
 
-    @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
-    createdAt: Date;
+  @Column()
+  state: string;
 
-    @UpdateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)", onUpdate: "CURRENT_TIMESTAMP(6)" })
-    updatedAt: Date;
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  createdAt: Date;
 
-    @OneToMany(() => Medication, medication => medication.drone)
-    medications: Medication[];
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  updatedAt: Date;
+
+  @OneToMany(() => Medication, (medication) => medication.drone)
+  medications: Medication[];
 }

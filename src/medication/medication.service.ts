@@ -6,16 +6,19 @@ import { CreateMedicationDto } from './dto/create-mediaction.dto';
 
 @Injectable({})
 export class MedicationService {
-    constructor(@InjectRepository(Medication) private medicationRepository : Repository<Medication>) {}
+  constructor(
+    @InjectRepository(Medication)
+    private medicationRepository: Repository<Medication>,
+  ) {}
 
-    registerMedication(medication: CreateMedicationDto) {
-        const newMedication = this.medicationRepository.create(medication);
-        return this.medicationRepository.save(newMedication);
-    }
+  registerMedication(medication: CreateMedicationDto) {
+    const newMedication = this.medicationRepository.create(medication);
+    return this.medicationRepository.save(newMedication);
+  }
 
-    getAllMedication() {
-        return this.medicationRepository.find({
-            relations: ['drone']
-        });
-    }
+  getAllMedication() {
+    return this.medicationRepository.find({
+      relations: ['drone'],
+    });
+  }
 }

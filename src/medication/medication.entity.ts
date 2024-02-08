@@ -1,5 +1,11 @@
 import { Drone } from 'src/drone/drone.entity';
-import { Entity, Column, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+} from 'typeorm';
 
 @Entity()
 export class Medication {
@@ -28,6 +34,6 @@ export class Medication {
   })
   updatedAt: Date;
 
-  @ManyToOne(() => Drone, drone => drone.medications)
+  @ManyToOne(() => Drone, (drone) => drone.medications)
   drone: Drone;
 }

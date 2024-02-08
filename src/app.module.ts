@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { DroneModule } from './drone/drone.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { MedicationModule } from './medication/medication.module';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { ConfigModule } from '@nestjs/config';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
-    DroneModule
+    DroneModule,
+    MedicationModule,
   ],
   controllers: [],
   providers: [],

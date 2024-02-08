@@ -13,6 +13,8 @@ services:
       MYSQL_PASSWORD: '123'
       MYSQL_DATABASE: dronesDB
       MYSQL_USER: development
+    volumes:
+      - ./data.sql:/docker-entrypoint-initdb.d/data.sql
     networks:
       - drones_net
 

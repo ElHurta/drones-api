@@ -15,7 +15,11 @@ export class DroneService {
   ) {}
 
   registerDrone(drone: CreateDroneDto) {
-    const newDrone = this.droneRepository.create(drone);
+    const newDrone = this.droneRepository.create({
+      ...drone,
+      state: 'IDLE',
+      medications: [],
+    });
     return this.droneRepository.save(newDrone);
   }
 
@@ -25,49 +29,52 @@ export class DroneService {
 
   getDroneById(serialNumber: string) {
     return this.droneRepository.findOne({
-        where: { serialNumber },
-        relations: ['medications'],
+      where: { serialNumber },
+      relations: ['medications'],
     });
   }
 
-  async loadDrone(serialNumber: string, medicationsToLoad: CreateMedicationDto[]) {
+  async loadDrone(serialNumber: string, medicationsIds: string[]) {
     // Validate the drone
     const drone = await this.getDroneById(serialNumber);
     if (!drone) {
-        return 'Drone not found!';
+      return 'Drone not found!';
     }
 
     // Validate the medications
-    const medications = await this.medicationRepository.findBy({
-            code: In(medicationsToLoad.map((medication) => medication.code)),
+    const medications = await this.medicationRepository.find({
+      where: { code: In(medicationsIds) },
     });
 
-    if (medications.length !== medicationsToLoad.length) {
-        return 'Medication not found!';
+    if (medications.length !== medicationsIds.length) {
+      return 'Medications not found!';
     }
 
-
     // Validate the weight limit
-    const totalWeight = medicationsToLoad.reduce(
-        (total, medication) => total + medication.weight,
-        0,
+    const totalWeight = medications.reduce(
+      (acc, medication) => acc + medication.weight,
+      0,
     );
 
     if (totalWeight > drone.weightLimit) {
-        return 'Weight limit exceeded!';
+      return 'Weight limit exceeded!';
     }
-    
+
     // Load the medications
-    const medicationsToSave = medicationsToLoad.map((medication) => {
-        this.medicationRepository.update(medication.code, {
-            drone: drone,
+    return medicationsIds.map((medicationId) => {
+        this.medicationRepository.update(medicationId, {
+          drone: drone,
         });
-        return medication;
+        return medicationId;
     });
   }
 
-  checkLoadedItems() {
-    return 'Items loaded successfully!';
+  checkLoadedItems(serialNumber: string) {
+    return this.droneRepository.findOne({
+      where: { serialNumber },
+      relations: ['medications'],
+      select: ['medications'],
+    });
   }
 
   checkAvailableDrones() {

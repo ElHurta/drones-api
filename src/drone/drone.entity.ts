@@ -14,7 +14,7 @@ export class Drone {
     weightLimit: number;
 
     @Column()
-    batteryCapacity: string;
+    batteryCapacity: number;
     
     @Column()
     state: string;

@@ -1,4 +1,5 @@
-import { Entity, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { Medication } from "src/medication/medication.entity";
+import { Entity, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
 
 @Entity()
 export class Drone {
@@ -23,4 +24,7 @@ export class Drone {
 
     @UpdateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)", onUpdate: "CURRENT_TIMESTAMP(6)" })
     updatedAt: Date;
+
+    @OneToMany(() => Medication, medication => medication.drone)
+    medications: Medication[];
 }

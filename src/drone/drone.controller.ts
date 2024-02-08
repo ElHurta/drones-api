@@ -12,6 +12,12 @@ export class DroneController {
         return this.dronService.registerDrone(drone);
     }
 
+    // Getting all drones
+    @Get('get-all-drones')
+    getAllDrones() {
+        return this.dronService.getAllDrones();
+    }
+
     // Loading a Drone with medication items
     @Put('load-drone')
     loadDrone() {

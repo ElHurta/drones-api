@@ -18,6 +18,7 @@ import { MedicationModule } from './medication/medication.module';
       database: process.env.DB_NAME,
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
+      autoLoadEntities: true,
     }),
     DroneModule,
     MedicationModule,

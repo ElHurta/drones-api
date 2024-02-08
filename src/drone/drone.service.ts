@@ -6,11 +6,15 @@ import { CreateDroneDto } from "./dto/create-drone.dto";
 
 @Injectable({})
 export class DroneService {
-    constructor(@InjectRepository(Drone) private userRepository : Repository<Drone>){}
+    constructor(@InjectRepository(Drone) private droneRepository : Repository<Drone>){}
 
     registerDrone(drone: CreateDroneDto) {
-        const newDrone = this.userRepository.create(drone);
-        return this.userRepository.save(newDrone);
+        const newDrone = this.droneRepository.create(drone);
+        return this.droneRepository.save(newDrone);
+    }
+
+    getAllDrones() {
+        return this.droneRepository.find({relations: ['medications']});
     }
 
     loadDrone() {

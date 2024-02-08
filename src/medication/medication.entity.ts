@@ -1,4 +1,5 @@
-import { Entity, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Drone } from 'src/drone/drone.entity';
+import { Entity, Column, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
 
 @Entity()
 export class Medication {
@@ -26,4 +27,7 @@ export class Medication {
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
   updatedAt: Date;
+
+  @ManyToOne(() => Drone, drone => drone.medications)
+  drone: Drone;
 }

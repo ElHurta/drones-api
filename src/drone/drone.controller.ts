@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Put } from "@nestjs/common";
+import { Body, Controller, Get, Post, Put } from "@nestjs/common";
 import { DroneService } from "./drone.service";
+import { CreateDroneDto } from "./dto/create-drone.dto";
 
 @Controller('drone')
 export class DroneController {
@@ -7,8 +8,8 @@ export class DroneController {
 
     // Registering a Drone
     @Post('register-drone')
-    registerDrone() {
-        return this.dronService.registerDrone();
+    registerDrone(@Body() drone: CreateDroneDto){
+        return this.dronService.registerDrone(drone);
     }
 
     // Loading a Drone with medication items
@@ -16,7 +17,7 @@ export class DroneController {
     loadDrone() {
         return this.dronService.loadDrone();
     }
-    
+
     // Checking loaded medication items loaded for a given drone
     @Get('check-loaded-items')
     checkLoadedItems() {

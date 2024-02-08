@@ -41,6 +41,21 @@ export class DroneService {
     });
   }
 
+  checkLoadedItems(serialNumber: string) {
+    return this.droneRepository.findOne({
+      where: { serialNumber },
+      relations: ['medications'],
+      select: ['medications'],
+    });
+  }
+
+  checkAvailableDronesForLoading() {
+    return this.droneRepository.find({
+      where: { state: 'IDLE' },
+      select: ['serialNumber'],
+    });
+  }
+
   async loadDrone(serialNumber: string, medicationsIds: string[]) {
     // Validate the drone
     const drone = await this.getDroneById(serialNumber);
@@ -69,22 +84,10 @@ export class DroneService {
 
     // Load the medications
     return medicationsIds.map((medicationId) => {
-        this.medicationRepository.update(medicationId, {
-          drone: drone,
-        });
-        return medicationId;
+      this.medicationRepository.update(medicationId, {
+        drone: drone,
+      });
+      return medicationId;
     });
-  }
-
-  checkLoadedItems(serialNumber: string) {
-    return this.droneRepository.findOne({
-      where: { serialNumber },
-      relations: ['medications'],
-      select: ['medications'],
-    });
-  }
-
-  checkAvailableDrones() {
-    return 'Drones available!';
   }
 }

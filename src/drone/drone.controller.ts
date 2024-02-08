@@ -32,14 +32,14 @@ export class DroneController {
   @Get('check-loaded-items/:serialNumber')
   async checkLoadedItems(@Param('serialNumber') serialNumber: string) {
     return this.dronService.checkLoadedItems(serialNumber).then((drone) => {
-        return drone.medications;
+      return drone.medications;
     });
   }
 
   // Checking available drones for loading
   @Get('check-available-drones')
   checkAvailableDrones() {
-    return this.dronService.checkAvailableDrones();
+    return this.dronService.checkAvailableDronesForLoading();
   }
 
   // Checking drone battery level for a given drone

@@ -52,7 +52,7 @@ export class DroneService {
 
   checkAvailableDronesForLoading() {
     return this.droneRepository.find({
-      where: { state: 'IDLE' },
+      where: { state: DroneStateEnum.IDLE },
       select: ['serialNumber'],
     });
   }
